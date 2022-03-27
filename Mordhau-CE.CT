@@ -1,0 +1,1133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="42">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>41</ID>
+      <Description>"Mordhau-CE by cbass"</Description>
+      <Options moHideChildren="1"/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+local activatePattern = '%*%*' -- Any script that starts with **
+[ENABLE]
+OpenProcess("Mordhau-Win64-Shipping.exe")
+--debugProcess()
+for i=0, AddressList.Count-1 do
+  if AddressList[i].Description:match(activatePattern) then
+    AddressList[i].Active = true
+  end
+end
+ 
+ 
+[DISABLE]
+OpenProcess("Mordhau-Win64-Shipping.exe")
+
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>26255</ID>
+          <Description>"**Remove AFK kicks"</Description>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+
+aobscanmodule(INJECT,Mordhau-Win64-Shipping.exe,F3 41 0F 11 84 24 28 0A 00 00) // should be unique
+alloc(newmem,$1000,INJECT)
+
+label(code)
+label(return)
+
+newmem:
+
+code:
+  mov [r12+00000A28],(float)0.0
+  jmp return
+
+INJECT:
+  jmp newmem
+  nop 5
+return:
+registersymbol(INJECT)
+
+[DISABLE]
+
+INJECT:
+  db F3 41 0F 11 84 24 28 0A 00 00
+
+unregistersymbol(INJECT)
+dealloc(newmem)
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>26304</ID>
+          <Description>"Camera Effect (saturation)"</Description>
+          <Options moHideChildren="1"/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+
+aobscanmodule(INJECT,Mordhau-Win64-Shipping.exe,5C 44 24 40 0F 95 C1 48 03 C8 48 89 4B 20 48 8B 5C 24 30 F3 0F 11 07 48 83 C4 20) // should be unique
+alloc(newmem,$1000,INJECT)
+
+alloc(hudEffect, 4) //allocating memory for helm id
+registersymbol(hudEffect)
+label(code)
+label(return)
+
+newmem:
+
+code:
+  push ebx
+  mov ebx,[hudEffect]
+  mov [rdi],ebx
+  pop ebx
+  add rsp,20
+  jmp return
+
+hudEffect:
+  dd (float)-1 //setting the initial value of "helmID" to 43
+
+INJECT+13:
+  jmp newmem
+  nop 3
+return:
+registersymbol(INJECT)
+
+[DISABLE]
+
+INJECT+13:
+  db F3 0F 11 07 48 83 C4 20
+unregistersymbol(hudEffect) //when disabled unregister the symbol
+
+dealloc(hudEffect) //deallocate from memory
+unregistersymbol(INJECT)
+dealloc(newmem)
+</AssemblerScript>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>26306</ID>
+              <Description>"No description"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>hudEffect</Address>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>26263</ID>
+          <Description>"**No Emote Cooldown"</Description>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+
+aobscanmodule(INJECT,Mordhau-Win64-Shipping.exe,80 78 6C 00 0F 84 EB 00 00 00) // should be unique
+alloc(newmem,$1000,INJECT)
+
+label(code)
+label(return)
+
+newmem:
+
+code:
+  cmp byte ptr [rax+6C],02
+  jmp return
+
+INJECT:
+  jmp newmem
+  nop 5
+return:
+registersymbol(INJECT)
+
+[DISABLE]
+
+INJECT:
+  db 80 78 6C 00 0F 84 EB 00 00 00
+
+unregistersymbol(INJECT)
+dealloc(newmem)
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>26310</ID>
+          <Description>"Third Person In First (buggy)"</Description>
+          <Options moHideChildren="1"/>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>26271</ID>
+              <Description>"First person (lock at 0)"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>"Mordhau-Win64-Shipping.exe"+058B4280</Address>
+              <Offsets>
+                <Offset>EE8</Offset>
+                <Offset>120</Offset>
+                <Offset>280</Offset>
+                <Offset>8</Offset>
+                <Offset>38</Offset>
+                <Offset>260</Offset>
+                <Offset>30</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>26309</ID>
+              <Description>"Camera style (lock at 1)"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>"Mordhau-Win64-Shipping.exe"+058B4280</Address>
+              <Offsets>
+                <Offset>EE9</Offset>
+                <Offset>120</Offset>
+                <Offset>280</Offset>
+                <Offset>8</Offset>
+                <Offset>38</Offset>
+                <Offset>260</Offset>
+                <Offset>30</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>26341</ID>
+          <Description>"**Streamer Mode (lock to keep changes)"</Description>
+          <Options moHideChildren="1"/>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>26337</ID>
+              <Description>"Player Name"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>String</VariableType>
+              <Length>20</Length>
+              <Unicode>1</Unicode>
+              <CodePage>0</CodePage>
+              <ZeroTerminate>1</ZeroTerminate>
+              <Address>"Mordhau-Win64-Shipping.exe"+058B4280</Address>
+              <Offsets>
+                <Offset>0000</Offset>
+                <Offset>0300</Offset>
+                <Offset>0228</Offset>
+                <Offset>00E0</Offset>
+                <Offset>120</Offset>
+                <Offset>280</Offset>
+                <Offset>8</Offset>
+                <Offset>38</Offset>
+                <Offset>260</Offset>
+                <Offset>30</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>26335</ID>
+              <Description>"PlayFab ID"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>String</VariableType>
+              <Length>20</Length>
+              <Unicode>1</Unicode>
+              <CodePage>0</CodePage>
+              <ZeroTerminate>1</ZeroTerminate>
+              <Address>"Mordhau-Win64-Shipping.exe"+058B4280</Address>
+              <Offsets>
+                <Offset>0000</Offset>
+                <Offset>03A8</Offset>
+                <Offset>0228</Offset>
+                <Offset>00E0</Offset>
+                <Offset>120</Offset>
+                <Offset>280</Offset>
+                <Offset>8</Offset>
+                <Offset>38</Offset>
+                <Offset>260</Offset>
+                <Offset>30</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>26339</ID>
+              <Description>"Rank Display Type"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>"Mordhau-Win64-Shipping.exe"+058B4280</Address>
+              <Offsets>
+                <Offset>035E</Offset>
+                <Offset>0228</Offset>
+                <Offset>00E0</Offset>
+                <Offset>120</Offset>
+                <Offset>280</Offset>
+                <Offset>8</Offset>
+                <Offset>38</Offset>
+                <Offset>260</Offset>
+                <Offset>30</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>26342</ID>
+              <Description>"Moderator Tag (set to 1)"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>"Mordhau-Win64-Shipping.exe"+058B4280</Address>
+              <Offsets>
+                <Offset>035D</Offset>
+                <Offset>0228</Offset>
+                <Offset>00E0</Offset>
+                <Offset>120</Offset>
+                <Offset>280</Offset>
+                <Offset>8</Offset>
+                <Offset>38</Offset>
+                <Offset>260</Offset>
+                <Offset>30</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>26340</ID>
+              <Description>"Level"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>"Mordhau-Win64-Shipping.exe"+058B4280</Address>
+              <Offsets>
+                <Offset>0354</Offset>
+                <Offset>0228</Offset>
+                <Offset>00E0</Offset>
+                <Offset>120</Offset>
+                <Offset>280</Offset>
+                <Offset>8</Offset>
+                <Offset>38</Offset>
+                <Offset>260</Offset>
+                <Offset>30</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>26281</ID>
+              <Description>"Ping Changer (client)"</Description>
+              <Options moHideChildren="1"/>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
+
+aobscanmodule(INJECT,Mordhau-Win64-Shipping.exe,88 8B 28 02 00 00) // should be unique
+alloc(newmem,$1000,INJECT)
+
+alloc(ping, 4)
+registersymbol(ping)
+
+label(code)
+label(return)
+
+newmem:
+
+code:
+  push eax
+  mov eax,[ping]
+  mov [rbx+00000228],eax
+  pop eax
+  jmp return
+
+
+ping:
+ dd (int)23
+
+INJECT:
+  jmp newmem
+  nop
+return:
+registersymbol(INJECT)
+
+[DISABLE]
+
+INJECT:
+  db 88 8B 28 02 00 00
+
+unregistersymbol(ping)
+unregistersymbol(INJECT)
+dealloc(newmem)
+dealloc(ping)
+</AssemblerScript>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>26343</ID>
+                  <Description>"Requested Ping (x4)"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>ping</Address>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+  </CheatEntries>
+  <CheatCodes>
+    <CodeEntry>
+      <Description>Change of mov eax,(int)199999</Description>
+      <AddressString>Mordhau-Win64-Shipping.exe+15BF9F3</AddressString>
+      <Before>
+        <Byte>E1</Byte>
+        <Byte>05</Byte>
+        <Byte>48</Byte>
+        <Byte>03</Byte>
+        <Byte>0F</Byte>
+      </Before>
+      <Actual>
+        <Byte>8B</Byte>
+        <Byte>41</Byte>
+        <Byte>10</Byte>
+      </Actual>
+      <After>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+        <Byte>5C</Byte>
+        <Byte>24</Byte>
+        <Byte>30</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of cmp byte ptr [rbp+00000098],00</Description>
+      <AddressString>Mordhau-Win64-Shipping.exe+2EE093F</AddressString>
+      <Before>
+        <Byte>8E</Byte>
+        <Byte>EC</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>80</Byte>
+        <Byte>BD</Byte>
+        <Byte>98</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>74</Byte>
+        <Byte>28</Byte>
+        <Byte>C6</Byte>
+        <Byte>44</Byte>
+        <Byte>24</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of cmp byte ptr [rdx+40],00</Description>
+      <AddressString>Mordhau-Win64-Shipping.exe+2E453E8</AddressString>
+      <Before>
+        <Byte>84</Byte>
+        <Byte>FB</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>80</Byte>
+        <Byte>7A</Byte>
+        <Byte>40</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>74</Byte>
+        <Byte>3B</Byte>
+        <Byte>41</Byte>
+        <Byte>80</Byte>
+        <Byte>B9</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of mov [rax+40],r15l</Description>
+      <AddressString>Mordhau-Win64-Shipping.exe+2E19C3D</AddressString>
+      <Before>
+        <Byte>1C</Byte>
+        <Byte>4C</Byte>
+        <Byte>89</Byte>
+        <Byte>78</Byte>
+        <Byte>38</Byte>
+      </Before>
+      <Actual>
+        <Byte>44</Byte>
+        <Byte>88</Byte>
+        <Byte>78</Byte>
+        <Byte>40</Byte>
+      </Actual>
+      <After>
+        <Byte>44</Byte>
+        <Byte>89</Byte>
+        <Byte>78</Byte>
+        <Byte>44</Byte>
+        <Byte>EB</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of mov byte ptr [rax+40],01</Description>
+      <AddressString>Mordhau-Win64-Shipping.exe+2E71BC9</AddressString>
+      <Before>
+        <Byte>D4</Byte>
+        <Byte>89</Byte>
+        <Byte>54</Byte>
+        <Byte>24</Byte>
+        <Byte>60</Byte>
+      </Before>
+      <Actual>
+        <Byte>C6</Byte>
+        <Byte>40</Byte>
+        <Byte>40</Byte>
+        <Byte>01</Byte>
+      </Actual>
+      <After>
+        <Byte>41</Byte>
+        <Byte>C6</Byte>
+        <Byte>46</Byte>
+        <Byte>28</Byte>
+        <Byte>01</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je Mordhau-Win64-Shipping.exe+2EE0970</Description>
+      <AddressString>Mordhau-Win64-Shipping.exe+2EE0946</AddressString>
+      <Before>
+        <Byte>98</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>28</Byte>
+      </Actual>
+      <After>
+        <Byte>C6</Byte>
+        <Byte>44</Byte>
+        <Byte>24</Byte>
+        <Byte>70</Byte>
+        <Byte>01</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je Mordhau-Win64-Shipping.exe+2EE0A42</Description>
+      <AddressString>Mordhau-Win64-Shipping.exe+2EE0A33</AddressString>
+      <Before>
+        <Byte>24</Byte>
+        <Byte>70</Byte>
+        <Byte>48</Byte>
+        <Byte>85</Byte>
+        <Byte>DB</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>0D</Byte>
+      </Actual>
+      <After>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+        <Byte>03</Byte>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of movzx edi,byte ptr [rsp+70]</Description>
+      <AddressString>Mordhau-Win64-Shipping.exe+2EE0A2B</AddressString>
+      <Before>
+        <Byte>E8</Byte>
+        <Byte>F5</Byte>
+        <Byte>E8</Byte>
+        <Byte>96</Byte>
+        <Byte>FE</Byte>
+      </Before>
+      <Actual>
+        <Byte>0F</Byte>
+        <Byte>B6</Byte>
+        <Byte>7C</Byte>
+        <Byte>24</Byte>
+        <Byte>70</Byte>
+      </Actual>
+      <After>
+        <Byte>48</Byte>
+        <Byte>85</Byte>
+        <Byte>DB</Byte>
+        <Byte>74</Byte>
+        <Byte>0D</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of inc [rbx+00000348]</Description>
+      <AddressString>Mordhau-Win64-Shipping.exe+2EC48C2</AddressString>
+      <Before>
+        <Byte>8B</Byte>
+        <Byte>03</Byte>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+        <Byte>CB</Byte>
+      </Before>
+      <Actual>
+        <Byte>FF</Byte>
+        <Byte>83</Byte>
+        <Byte>48</Byte>
+        <Byte>03</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>FF</Byte>
+        <Byte>90</Byte>
+        <Byte>50</Byte>
+        <Byte>08</Byte>
+        <Byte>00</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je Mordhau-Win64-Shipping.exe+2EC48E0</Description>
+      <AddressString>Mordhau-Win64-Shipping.exe+2EC4888</AddressString>
+      <Before>
+        <Byte>6B</Byte>
+        <Byte>67</Byte>
+        <Byte>00</Byte>
+        <Byte>84</Byte>
+        <Byte>C0</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>56</Byte>
+      </Actual>
+      <After>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+        <Byte>8B</Byte>
+        <Byte>88</Byte>
+        <Byte>02</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of push rbx</Description>
+      <AddressString>Mordhau-Win64-Shipping.exe+2EC4830</AddressString>
+      <Before>
+        <Byte>5D</Byte>
+        <Byte>C3</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+      </Before>
+      <Actual>
+        <Byte>40</Byte>
+        <Byte>53</Byte>
+      </Actual>
+      <After>
+        <Byte>48</Byte>
+        <Byte>83</Byte>
+        <Byte>EC</Byte>
+        <Byte>20</Byte>
+        <Byte>8B</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of mov eax,[rcx+00000348]</Description>
+      <AddressString>Mordhau-Win64-Shipping.exe+2EC4836</AddressString>
+      <Before>
+        <Byte>53</Byte>
+        <Byte>48</Byte>
+        <Byte>83</Byte>
+        <Byte>EC</Byte>
+        <Byte>20</Byte>
+      </Before>
+      <Actual>
+        <Byte>8B</Byte>
+        <Byte>81</Byte>
+        <Byte>48</Byte>
+        <Byte>03</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+        <Byte>D9</Byte>
+        <Byte>89</Byte>
+        <Byte>81</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of test rcx,rcx</Description>
+      <AddressString>Mordhau-Win64-Shipping.exe+2EC484C</AddressString>
+      <Before>
+        <Byte>89</Byte>
+        <Byte>88</Byte>
+        <Byte>02</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>48</Byte>
+        <Byte>85</Byte>
+        <Byte>C9</Byte>
+      </Actual>
+      <After>
+        <Byte>0F</Byte>
+        <Byte>84</Byte>
+        <Byte>A5</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of call Mordhau-Win64-Shipping.UObject::FindFunctionChecked</Description>
+      <AddressString>Mordhau-Win64-Shipping.exe+353B49C</AddressString>
+      <Before>
+        <Byte>C6</Byte>
+        <Byte>44</Byte>
+        <Byte>24</Byte>
+        <Byte>30</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>E8</Byte>
+        <Byte>9F</Byte>
+        <Byte>BD</Byte>
+        <Byte>59</Byte>
+        <Byte>FE</Byte>
+      </Actual>
+      <After>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+        <Byte>D0</Byte>
+        <Byte>4C</Byte>
+        <Byte>8D</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of call Mordhau-Win64-Shipping.UAdvancedCharacterMovement::ConstrainInputAcceleration</Description>
+      <AddressString>Mordhau-Win64-Shipping.exe+14D6829</AddressString>
+      <Before>
+        <Byte>EC</Byte>
+        <Byte>20</Byte>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+        <Byte>DA</Byte>
+      </Before>
+      <Actual>
+        <Byte>E8</Byte>
+        <Byte>12</Byte>
+        <Byte>65</Byte>
+        <Byte>FA</Byte>
+        <Byte>FF</Byte>
+      </Actual>
+      <After>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+        <Byte>C3</Byte>
+        <Byte>48</Byte>
+        <Byte>83</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of call Mordhau-Win64-Shipping.exe+2F0B2E0</Description>
+      <AddressString>Mordhau-Win64-Shipping.exe+147CD70</AddressString>
+      <Before>
+        <Byte>83</Byte>
+        <Byte>C4</Byte>
+        <Byte>20</Byte>
+        <Byte>5B</Byte>
+        <Byte>C3</Byte>
+      </Before>
+      <Actual>
+        <Byte>E8</Byte>
+        <Byte>6B</Byte>
+        <Byte>E5</Byte>
+        <Byte>A8</Byte>
+        <Byte>01</Byte>
+      </Actual>
+      <After>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+        <Byte>C3</Byte>
+        <Byte>48</Byte>
+        <Byte>83</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of mov [rsp+08],rbx</Description>
+      <AddressString>Mordhau-Win64-Shipping.exe+2F0B2E0</AddressString>
+      <Before>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+      </Before>
+      <Actual>
+        <Byte>48</Byte>
+        <Byte>89</Byte>
+        <Byte>5C</Byte>
+        <Byte>24</Byte>
+        <Byte>08</Byte>
+      </Actual>
+      <After>
+        <Byte>48</Byte>
+        <Byte>89</Byte>
+        <Byte>74</Byte>
+        <Byte>24</Byte>
+        <Byte>10</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of mov rax,rbx</Description>
+      <AddressString>Mordhau-Win64-Shipping.exe+147CD75</AddressString>
+      <Before>
+        <Byte>E8</Byte>
+        <Byte>6B</Byte>
+        <Byte>E5</Byte>
+        <Byte>A8</Byte>
+        <Byte>01</Byte>
+      </Before>
+      <Actual>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+        <Byte>C3</Byte>
+      </Actual>
+      <After>
+        <Byte>48</Byte>
+        <Byte>83</Byte>
+        <Byte>C4</Byte>
+        <Byte>20</Byte>
+        <Byte>5B</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of call qword ptr [rax+00000568]</Description>
+      <AddressString>Mordhau-Win64-Shipping.exe+2F0B305</AddressString>
+      <Before>
+        <Byte>74</Byte>
+        <Byte>41</Byte>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+        <Byte>01</Byte>
+      </Before>
+      <Actual>
+        <Byte>FF</Byte>
+        <Byte>90</Byte>
+        <Byte>68</Byte>
+        <Byte>05</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>84</Byte>
+        <Byte>C0</Byte>
+        <Byte>75</Byte>
+        <Byte>10</Byte>
+        <Byte>48</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of je Mordhau-Win64-Shipping.exe+2F0B343</Description>
+      <AddressString>Mordhau-Win64-Shipping.exe+2F0B31D</AddressString>
+      <Before>
+        <Byte>05</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>84</Byte>
+        <Byte>C0</Byte>
+      </Before>
+      <Actual>
+        <Byte>74</Byte>
+        <Byte>24</Byte>
+      </Actual>
+      <After>
+        <Byte>8B</Byte>
+        <Byte>07</Byte>
+        <Byte>89</Byte>
+        <Byte>03</Byte>
+        <Byte>8B</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of ret </Description>
+      <AddressString>Mordhau-Win64-Shipping.exe+2F0B363</AddressString>
+      <Before>
+        <Byte>48</Byte>
+        <Byte>83</Byte>
+        <Byte>C4</Byte>
+        <Byte>20</Byte>
+        <Byte>5F</Byte>
+      </Before>
+      <Actual>
+        <Byte>C3</Byte>
+      </Actual>
+      <After>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of mov [rcx+28],(int)1</Description>
+      <AddressString>Mordhau-Win64-Shipping.exe+1BA0A2D</AddressString>
+      <Before>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+        <Byte>44</Byte>
+        <Byte>24</Byte>
+        <Byte>20</Byte>
+      </Before>
+      <Actual>
+        <Byte>48</Byte>
+        <Byte>89</Byte>
+        <Byte>41</Byte>
+        <Byte>28</Byte>
+      </Actual>
+      <After>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+        <Byte>44</Byte>
+        <Byte>24</Byte>
+        <Byte>48</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of sete al</Description>
+      <AddressString>Mordhau-Win64-Shipping.exe+1AC1B7D</AddressString>
+      <Before>
+        <Byte>C8</Byte>
+        <Byte>41</Byte>
+        <Byte>84</Byte>
+        <Byte>49</Byte>
+        <Byte>7B</Byte>
+      </Before>
+      <Actual>
+        <Byte>0F</Byte>
+        <Byte>94</Byte>
+        <Byte>C0</Byte>
+      </Actual>
+      <After>
+        <Byte>C3</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+        <Byte>CC</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of mov byte ptr [rbx+00000D43],01</Description>
+      <AddressString>Mordhau-Win64-Shipping.exe+15006DA</AddressString>
+      <Before>
+        <Byte>00</Byte>
+        <Byte>02</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>C6</Byte>
+        <Byte>83</Byte>
+        <Byte>43</Byte>
+        <Byte>0D</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>01</Byte>
+      </Actual>
+      <After>
+        <Byte>48</Byte>
+        <Byte>83</Byte>
+        <Byte>C4</Byte>
+        <Byte>20</Byte>
+        <Byte>5B</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of call Mordhau-Win64-Shipping.AVirtualWeapon::AVirtualWeapon</Description>
+      <AddressString>Mordhau-Win64-Shipping.exe+1500699</AddressString>
+      <Before>
+        <Byte>EC</Byte>
+        <Byte>20</Byte>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+        <Byte>D9</Byte>
+      </Before>
+      <Actual>
+        <Byte>E8</Byte>
+        <Byte>A2</Byte>
+        <Byte>0F</Byte>
+        <Byte>16</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>80</Byte>
+        <Byte>63</Byte>
+        <Byte>5B</Byte>
+        <Byte>FE</Byte>
+        <Byte>48</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of lea rax,[Mordhau-Win64-Shipping.AFistsWeapon::`vftable'+860]</Description>
+      <AddressString>Mordhau-Win64-Shipping.exe+15006AC</AddressString>
+      <Before>
+        <Byte>E0</Byte>
+        <Byte>02</Byte>
+        <Byte>48</Byte>
+        <Byte>89</Byte>
+        <Byte>03</Byte>
+      </Before>
+      <Actual>
+        <Byte>48</Byte>
+        <Byte>8D</Byte>
+        <Byte>05</Byte>
+        <Byte>ED</Byte>
+        <Byte>9E</Byte>
+        <Byte>E0</Byte>
+        <Byte>02</Byte>
+      </Actual>
+      <After>
+        <Byte>48</Byte>
+        <Byte>89</Byte>
+        <Byte>83</Byte>
+        <Byte>20</Byte>
+        <Byte>02</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of lea rax,[Mordhau-Win64-Shipping.AKickWeapon::`vftable']</Description>
+      <AddressString>Mordhau-Win64-Shipping.exe+15006A2</AddressString>
+      <Before>
+        <Byte>00</Byte>
+        <Byte>80</Byte>
+        <Byte>63</Byte>
+        <Byte>5B</Byte>
+        <Byte>FE</Byte>
+      </Before>
+      <Actual>
+        <Byte>48</Byte>
+        <Byte>8D</Byte>
+        <Byte>05</Byte>
+        <Byte>AF</Byte>
+        <Byte>A8</Byte>
+        <Byte>E0</Byte>
+        <Byte>02</Byte>
+      </Actual>
+      <After>
+        <Byte>48</Byte>
+        <Byte>89</Byte>
+        <Byte>03</Byte>
+        <Byte>48</Byte>
+        <Byte>8D</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of mov rax,[Mordhau-Win64-Shipping.exe+56CFEC0]</Description>
+      <AddressString>Mordhau-Win64-Shipping.exe+168786A</AddressString>
+      <Before>
+        <Byte>EC</Byte>
+        <Byte>88</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+        <Byte>05</Byte>
+        <Byte>4F</Byte>
+        <Byte>86</Byte>
+        <Byte>04</Byte>
+        <Byte>04</Byte>
+      </Actual>
+      <After>
+        <Byte>48</Byte>
+        <Byte>85</Byte>
+        <Byte>C0</Byte>
+        <Byte>0F</Byte>
+        <Byte>85</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of lea rax,[Mordhau-Win64-Shipping.InternalConstructor&lt;AKickWeapon&gt;]</Description>
+      <AddressString>Mordhau-Win64-Shipping.exe+16878C5</AddressString>
+      <Before>
+        <Byte>FF</Byte>
+        <Byte>49</Byte>
+        <Byte>89</Byte>
+        <Byte>43</Byte>
+        <Byte>C8</Byte>
+      </Before>
+      <Actual>
+        <Byte>48</Byte>
+        <Byte>8D</Byte>
+        <Byte>05</Byte>
+        <Byte>74</Byte>
+        <Byte>1B</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>49</Byte>
+        <Byte>89</Byte>
+        <Byte>43</Byte>
+        <Byte>C0</Byte>
+        <Byte>48</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of add [rax],cl</Description>
+      <AddressString>Mordhau-Win64-Shipping.exe+5450CB7</AddressString>
+      <Before>
+        <Byte>5D</Byte>
+        <Byte>7E</Byte>
+        <Byte>F7</Byte>
+        <Byte>7F</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>00</Byte>
+        <Byte>08</Byte>
+      </Actual>
+      <After>
+        <Byte>11</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of add [rax],al</Description>
+      <AddressString>Mordhau-Win64-Shipping.exe+56CFBDD</AddressString>
+      <Before>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>00</Byte>
+        <Byte>FE</Byte>
+        <Byte>72</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Change of jmp Mordhau-Win64-Shipping.AMordhauWeapon::RequestBlock</Description>
+      <AddressString>Mordhau-Win64-Shipping.exe+14EE451</AddressString>
+      <Before>
+        <Byte>20</Byte>
+        <Byte>41</Byte>
+        <Byte>5E</Byte>
+        <Byte>5F</Byte>
+        <Byte>5E</Byte>
+      </Before>
+      <Actual>
+        <Byte>E9</Byte>
+        <Byte>CA</Byte>
+        <Byte>3D</Byte>
+        <Byte>20</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>48</Byte>
+        <Byte>8B</Byte>
+        <Byte>5C</Byte>
+        <Byte>24</Byte>
+        <Byte>50</Byte>
+      </After>
+    </CodeEntry>
+  </CheatCodes>
+  <UserdefinedSymbols/>
+</CheatTable>
